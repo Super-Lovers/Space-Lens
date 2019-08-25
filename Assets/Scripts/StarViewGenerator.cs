@@ -22,8 +22,7 @@ public class StarViewGenerator : MonoBehaviour
 
         //Debug.Log($"<color=#ff0000>{pixels.Length}</color>");
         //Debug.Log($"<color=#0000ff>{blackPixels.Count()}</color>");
-
-        System.Random rng = new System.Random();
+        
         float texture_width = starsSprite.rect.size.x;
         float texture_height = starsSprite.rect.size.y;
         
@@ -36,12 +35,13 @@ public class StarViewGenerator : MonoBehaviour
                 currentPixel.b == 0 &&
                 currentPixel.a == 1)
             {
-                if (rng.Next(1000) > 998)
+                if (Random.Range(0, 1000) > 980)
                 {
                     GameObject obj = Instantiate(star, starsContainer);
                     Transform objTransform = obj.GetComponent<Transform>();
-                    Vector3 new_position = new Vector3(((i % texture_width) * 0.01f), (-((i / texture_width) * 0.01f)), 0);
+                    Vector3 new_position = new Vector3(((i % texture_width) * 0.01f) - ((texture_width / 2) * 0.01f), (-((i / texture_width) * 0.01f)) + ((texture_height / 2) * 0.01f), 0);
                     objTransform.position = new_position;
+                    obj.GetComponent<StarController>().Initialize();
                 }
             }
         }
