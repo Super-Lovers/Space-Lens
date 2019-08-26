@@ -3,6 +3,8 @@
 public class StarController : MonoBehaviour
 {
     [SerializeField]
+    private string _name;
+    [SerializeField]
     private StarClassification _starClassification;
 
     [SerializeField]
@@ -14,8 +16,10 @@ public class StarController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     #endregion
 
-    public void Initialize()
+    public void Initialize(string name)
     {
+        _name = name;
+
         _spriteRenderer = GetComponent<SpriteRenderer>();
         
         int randomKelvin = Random.Range(MinTemperature, MaxTemperature + 2500);

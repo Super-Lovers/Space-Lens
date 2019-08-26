@@ -1,5 +1,8 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using LitJson;
+using System.Collections.Generic;
+using System.Linq;
 
 public class StarViewGenerator : MonoBehaviour
 {
@@ -35,9 +38,26 @@ public class StarViewGenerator : MonoBehaviour
         }
     }
 
-    [MenuItem("Star View/Generate Basic")]
-    static void Generate()
+    [MenuItem("Star View/Generate Stars")]
+    static void GenerateStars()
     {
+        TextAsset namesDatabaseOne = Resources.Load<TextAsset>("Space Objects Names/names0");
+        TextAsset namesDatabaseTwo = Resources.Load<TextAsset>("Space Objects Names/names1");
+        JsonData namesDatabaseOneData = JsonMapper.ToObject(namesDatabaseOne.text);
+        JsonData namesDatabaseTwoData = JsonMapper.ToObject(namesDatabaseTwo.text);
+
+        HashSet<string> finalNamesHashset = new HashSet<string>();
+        List<string> finalNames = finalNamesHashset.ToList();
+
+        for (int i = 0; i < namesDatabaseOneData.Count; i++)
+        {
+            finalNames.Add(namesDatabaseOneData[i].ToString());
+        }
+        for (int i = 0; i < namesDatabaseTwoData.Count; i++)
+        {
+            finalNames.Add(namesDatabaseTwoData[i].ToString());
+        }
+
         Sprite starsSprite =
             GameObject.FindGameObjectWithTag("Space Objects Texture").GetComponent<SpriteRenderer>().sprite;
         Transform starsContainer =
@@ -53,7 +73,10 @@ public class StarViewGenerator : MonoBehaviour
 
         //Debug.Log($"<color=#ff0000>{pixels.Length}</color>");
         //Debug.Log($"<color=#0000ff>{blackPixels.Count()}</color>");
-        
+
+        List<KeyValuePair<string, int>> namesRepeated = new List<KeyValuePair<string, int>>();
+        int currentNameIndex = 0;
+
         float texture_width = starsSprite.rect.size.x;
         float texture_height = starsSprite.rect.size.y;
         
@@ -74,7 +97,30 @@ public class StarViewGenerator : MonoBehaviour
                     Transform objTransform = obj.GetComponent<Transform>();
                     Vector3 new_position = new Vector3(((i % texture_width) * 0.01f) - ((texture_width / 2) * 0.01f), (-((i / texture_width) * 0.01f)) + ((texture_height / 2) * 0.01f), 0);
                     objTransform.position = new_position;
-                    obj.GetComponent<StarController>().Initialize();
+
+                    bool didNameExistAlready = false;
+                    string newName = finalNames[Random.Range(0, finalNames.Count)];
+                    for (int j = 0; j < namesRepeated.Count; j++)
+                    {
+                        if (newName == namesRepeated[j].Key)
+                        {
+                            int timesRepeared = namesRepeated[j].Value + 1;
+                            namesRepeated[j] = new KeyValuePair<string,int>(namesRepeated[j].Key, timesRepeared);
+                            newName = namesRepeated[j].Key + " " + namesRepeated[j].Value;
+
+                            didNameExistAlready = true;
+                            Debug.Log(newName);
+                            break;
+                        }
+                    }
+
+                    if (didNameExistAlready == false)
+                    {
+                        namesRepeated.Add(new KeyValuePair<string, int>(newName, 0));
+                    }
+
+                    obj.GetComponent<StarController>().Initialize(newName);
+                    currentNameIndex++;
                 }
             }
         }

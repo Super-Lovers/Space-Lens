@@ -9,27 +9,39 @@ public class PointerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1))
         {
             if (_zoomedIn)
             {
                 foreach (GameObject obj in MainViewObjects)
                 {
-                    obj.SetActive(true);
+                    if (obj != null)
+                    {
+                        obj.SetActive(true);
+                    }
                 }
                 foreach (GameObject obj in ZoomedViewObjects)
                 {
-                    obj.SetActive(false);
+                    if (obj != null)
+                    {
+                        obj.SetActive(false);
+                    }
                 }
             } else
             {
                 foreach (GameObject obj in MainViewObjects)
                 {
-                    obj.SetActive(false);
+                    if (obj != null)
+                    {
+                        obj.SetActive(false);
+                    }
                 }
                 foreach (GameObject obj in ZoomedViewObjects)
                 {
-                    obj.SetActive(true);
+                    if (obj != null)
+                    {
+                        obj.SetActive(true);
+                    }
                 }
             }
             _zoomedIn = !_zoomedIn;
