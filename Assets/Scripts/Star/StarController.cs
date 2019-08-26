@@ -24,37 +24,37 @@ public class StarController : MonoBehaviour
         if (randomKelvin >= MinTemperature && randomKelvin <= 3700)
         {
             _starClassification = StarClassification.M;
-            _spriteRenderer.color = Color.yellow;
+            //_spriteRenderer.color = Color.yellow;
         }
         else if (randomKelvin > 3700 && randomKelvin <= 5200)
         {
             _starClassification = StarClassification.K;
-            _spriteRenderer.color = Color.red;
+            //_spriteRenderer.color = Color.red;
         }
         else if (randomKelvin > 5200 && randomKelvin <= 6000)
         {
             _starClassification = StarClassification.G;
-            _spriteRenderer.color = Color.magenta;
+            //_spriteRenderer.color = Color.magenta;
         }
         else if (randomKelvin > 6000 && randomKelvin <= 7500)
         {
             _starClassification = StarClassification.F;
-            _spriteRenderer.color = Color.white;
+            //_spriteRenderer.color = Color.white;
         }
         else if (randomKelvin > 7500 && randomKelvin <= 10000)
         {
             _starClassification = StarClassification.A;
-            _spriteRenderer.color = Color.gray;
+            //_spriteRenderer.color = Color.gray;
         }
         else if (randomKelvin > 10000 && randomKelvin <= 12500)
         {
             _starClassification = StarClassification.B;
-            _spriteRenderer.color = Color.cyan;
+            //_spriteRenderer.color = Color.cyan;
         }
         else if (randomKelvin > MaxTemperature)
         {
             _starClassification = StarClassification.O;
-            _spriteRenderer.color = Color.blue;
+            //_spriteRenderer.color = Color.blue;
         }
     }
 }
