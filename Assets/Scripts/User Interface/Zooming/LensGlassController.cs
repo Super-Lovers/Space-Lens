@@ -4,11 +4,12 @@ using UnityEngine.UI;
 public class LensGlassController : MonoBehaviour
 {
     [SerializeField]
-    private Transform LensGlass;
+    private Transform LensGlass = null;
     [SerializeField]
-    private Transform LensGlassCamera;
+    private Transform LensGlassCamera = null;
     [SerializeField]
-    private Image ConsoleDisplay;
+    private Image ConsoleDisplay = null;
+    public bool CanCameraZoom { get; set; }
 
     private void Update()
     {
@@ -24,9 +25,11 @@ public class LensGlassController : MonoBehaviour
             transform.position = newLensPosition;
             LensGlass.position = Input.mousePosition;
             LensGlassCamera.position = newCameraPosition;
+            CanCameraZoom = true;
         }
         else
         {
+            CanCameraZoom = false;
             LensGlass.gameObject.SetActive(false);
         }
     }

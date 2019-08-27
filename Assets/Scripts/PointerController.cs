@@ -3,13 +3,15 @@ using UnityEngine;
 
 public class PointerController : MonoBehaviour
 {
-    public List<GameObject> MainViewObjects;
-    public List<GameObject> ZoomedViewObjects;
+    [SerializeField]
+    private LensGlassController LensGlassController = null;
+    public List<GameObject> MainViewObjects = new List<GameObject>();
+    public List<GameObject> ZoomedViewObjects = new List<GameObject>();
     private bool _zoomedIn = false;
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && LensGlassController.CanCameraZoom)
         {
             if (_zoomedIn)
             {
@@ -45,17 +47,25 @@ public class PointerController : MonoBehaviour
                 }
             }
             _zoomedIn = !_zoomedIn;
-            /*
-            Vector3 pointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+
+        if (Input.GetMouseButtonDown(0) && _zoomedIn == true)
+        {
+            Vector3 pointerPosition = Camera.main.ViewportToWorldPoint(Input.mousePosition);
             Vector2 origin = new Vector2(pointerPosition.x, pointerPosition.y);
             Vector2 direction = Vector2.down;
             RaycastHit2D hit = Physics2D.Raycast(origin, direction, Mathf.Infinity);
-            
+
             if (hit && hit.transform.CompareTag("Space Object"))
             {
-                ObjectDetailsManager.Instance.InitializePanelOf(hit.collider.GetComponent<StarController>(), pointerPosition);
+                StarController starController;
+                if ((starController = hit.collider.GetComponent<StarController>()) != null)
+                {
+                    Debug.Log(starController.Name);
+                    starController.ToggleMarker();
+                }
+                //ObjectDetailsManager.Instance.InitializePanelOf(hit.collider.GetComponent<StarController>(), pointerPosition);
             }
-            */
         }
     }
 }

@@ -4,24 +4,67 @@ public class StarController : MonoBehaviour
 {
     [SerializeField]
     private string _name;
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+        set
+        {
+            _name = value;
+        }
+    }
+    [TextArea(0, 11)]
     [SerializeField]
-    private StarClassification _starClassification;
+    private string Description;
+    [SerializeField]
+    private StarClassification _starClassification = StarClassification.K;
 
     [SerializeField]
     private int _temperatureInKelvin;
     private const int MinTemperature = 2400;
     private const int MaxTemperature = 12500;
 
+    [Space(10)]
+    [SerializeField]
+    private GameObject _marker = null;
+
     #region Game Object Components
     private SpriteRenderer _spriteRenderer;
     #endregion
+
+    #region Dependencies
+    private StarViewController _starViewController;
+    #endregion
+
+    private void Start()
+    {
+        _starViewController = GameObject.FindGameObjectWithTag("Star View Controller").GetComponent<StarViewController>();
+    }
+
+    private void Update()
+    {
+        if (_marker.activeSelf)
+        {
+            StabilizeMarkerRotation();
+        }
+    }
+
+    private void StabilizeMarkerRotation()
+    {
+        _marker.transform.rotation = new Quaternion(_starViewController.transform.rotation.x,
+            _starViewController.transform.rotation.y,
+            -_starViewController.transform.rotation.z,
+            _starViewController.transform.rotation.w);
+    }
 
     public void Initialize(string name)
     {
         _name = name;
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        
+
         int randomKelvin = Random.Range(MinTemperature, MaxTemperature + 2500);
         _temperatureInKelvin = randomKelvin;
 
@@ -59,6 +102,35 @@ public class StarController : MonoBehaviour
         {
             _starClassification = StarClassification.O;
             //_spriteRenderer.color = Color.blue;
+        } else
+        {
+            _starClassification = StarClassification.K;
         }
+    }
+
+    public void ToggleMarker()
+    {
+        if (_starViewController.PreviousStarController == null)
+        {
+            _starViewController.PreviousStarController = this;
+            _starViewController.CurrentStarController = this;
+        } else if (_starViewController.PreviousStarController != null)
+        {
+            _starViewController.CurrentStarController.HideMarker();
+            _starViewController.PreviousStarController = _starViewController.CurrentStarController;
+            _starViewController.CurrentStarController = this;
+        }
+
+        _starViewController.CurrentStarController.ShowMarker();
+    }
+
+    public void ShowMarker()
+    {
+        _marker.SetActive(true);
+    }
+
+    public void HideMarker()
+    {
+        _marker.SetActive(false);
     }
 }

@@ -3,7 +3,7 @@
 public class StarViewController : MonoBehaviour
 {
     [SerializeField]
-    private Transform _starView;
+    private Transform _starView = null;
 
     // Parameters of the speed at which the
     // star view rotates in the background
@@ -12,8 +12,13 @@ public class StarViewController : MonoBehaviour
     [Space(10)]
     [Range(0, 5)]
     [SerializeField]
-    private float _rotationDelay;
+    private float _rotationDelay = 0;
     private bool _rotationCooldown = false;
+
+    [Header("======> Recently selected objects")]
+    [Space(10)]
+    public StarController PreviousStarController;
+    public StarController CurrentStarController;
 
     private void Update()
     {
@@ -28,5 +33,10 @@ public class StarViewController : MonoBehaviour
     private void EnableRotation()
     {
         _rotationCooldown = false;
+    }
+
+    public float GetRotationDelay()
+    {
+        return _rotationDelay;
     }
 }

@@ -109,7 +109,6 @@ public class StarViewGenerator : MonoBehaviour
                             newName = namesRepeated[j].Key + " " + namesRepeated[j].Value;
 
                             didNameExistAlready = true;
-                            Debug.Log(newName);
                             break;
                         }
                     }
