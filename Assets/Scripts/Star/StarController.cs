@@ -16,10 +16,9 @@ public class StarController : MonoBehaviour
         }
     }
     [TextArea(0, 11)]
-    [SerializeField]
-    private string Description;
-    [SerializeField]
-    private StarClassification _starClassification = StarClassification.K;
+    public string Description = string.Empty;
+    public StarClassification StarClassification = StarClassification.K;
+    public bool Bookmarked = false;
 
     [SerializeField]
     private int _temperatureInKelvin;
@@ -36,11 +35,20 @@ public class StarController : MonoBehaviour
 
     #region Dependencies
     private StarViewController _starViewController;
+    private PanelController _panelController;
     #endregion
 
     private void Start()
     {
-        _starViewController = GameObject.FindGameObjectWithTag("Star View Controller").GetComponent<StarViewController>();
+        _starViewController = FindObjectOfType<StarViewController>();
+        _panelController = FindObjectOfType<PanelController>();
+        UpdateBookmarkStatus();
+    }
+
+    public void UpdateBookmarkStatus()
+    {
+        Bookmarked = _starViewController.isObjectBookmarked(this);
+        _panelController.UpdateBookmarkStatus(Bookmarked);
     }
 
     private void Update()
@@ -70,41 +78,41 @@ public class StarController : MonoBehaviour
 
         if (randomKelvin >= MinTemperature && randomKelvin <= 3700)
         {
-            _starClassification = StarClassification.M;
+            StarClassification = StarClassification.M;
             //_spriteRenderer.color = Color.yellow;
         }
         else if (randomKelvin > 3700 && randomKelvin <= 5200)
         {
-            _starClassification = StarClassification.K;
+            StarClassification = StarClassification.K;
             //_spriteRenderer.color = Color.red;
         }
         else if (randomKelvin > 5200 && randomKelvin <= 6000)
         {
-            _starClassification = StarClassification.G;
+            StarClassification = StarClassification.G;
             //_spriteRenderer.color = Color.magenta;
         }
         else if (randomKelvin > 6000 && randomKelvin <= 7500)
         {
-            _starClassification = StarClassification.F;
+            StarClassification = StarClassification.F;
             //_spriteRenderer.color = Color.white;
         }
         else if (randomKelvin > 7500 && randomKelvin <= 10000)
         {
-            _starClassification = StarClassification.A;
+            StarClassification = StarClassification.A;
             //_spriteRenderer.color = Color.gray;
         }
         else if (randomKelvin > 10000 && randomKelvin <= 12500)
         {
-            _starClassification = StarClassification.B;
+            StarClassification = StarClassification.B;
             //_spriteRenderer.color = Color.cyan;
         }
         else if (randomKelvin > MaxTemperature)
         {
-            _starClassification = StarClassification.O;
+            StarClassification = StarClassification.O;
             //_spriteRenderer.color = Color.blue;
         } else
         {
-            _starClassification = StarClassification.K;
+            StarClassification = StarClassification.K;
         }
     }
 

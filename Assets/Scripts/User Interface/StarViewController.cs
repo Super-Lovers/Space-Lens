@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class StarViewController : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class StarViewController : MonoBehaviour
     public StarController PreviousStarController;
     public StarController CurrentStarController;
 
+    private List<StarController> _bookmarkedObjects = new List<StarController>();
+
     private void Update()
     {
         if (_rotationCooldown == false)
@@ -28,6 +31,37 @@ public class StarViewController : MonoBehaviour
             Invoke("EnableRotation", _rotationDelay);
             _rotationCooldown = true;
         }
+    }
+
+    public void BookmarkToggleCurrent()
+    {
+        if (isObjectBookmarked(CurrentStarController))
+        {
+            _bookmarkedObjects.Remove(CurrentStarController);
+        } else
+        {
+            _bookmarkedObjects.Add(CurrentStarController);
+        }
+
+        CurrentStarController.UpdateBookmarkStatus();
+    }
+
+    public int GetNumberOfBookmarks()
+    {
+        return _bookmarkedObjects.Count;
+    }
+
+    public bool isObjectBookmarked(StarController obj)
+    {
+        foreach (StarController controller in _bookmarkedObjects)
+        {
+            if (obj == controller)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void EnableRotation()

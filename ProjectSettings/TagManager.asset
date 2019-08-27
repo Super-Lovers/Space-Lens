@@ -8,7 +8,6 @@ TagManager:
   - Space Objects Texture
   - Space Object
   - Grid Matrix
-  - Star View Controller
   layers:
   - Default
   - TransparentFX
