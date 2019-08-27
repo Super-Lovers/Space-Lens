@@ -15,6 +15,8 @@ public class PanelController : MonoBehaviour
     [SerializeField]
     private Image _bookmarkStatus = null;
 
+    [SerializeField]
+    private GameObject _closeDetailsButton = null;
     public Sprite BookmarkedImage = null;
     public Sprite NotBookmarkedImage = null;
 
@@ -22,19 +24,33 @@ public class PanelController : MonoBehaviour
     [Space(10)]
     public TextMeshProUGUI PlaceholderText = null;
 
-    private bool _isItLoading = false;
-    private const float titlesLoadSpeed = 0.1f;
-    private const float plainTextLoadSpeed = 0.02f;
+    public bool IsItLoading = false;
+    private const float titlesLoadSpeed = 0.03f;
+    private const float plainTextLoadSpeed = 0.000000005f;
+
+    #region Dependencies
+    public GameObject BookmarksPanel;
+    #endregion
 
     private void Start()
     {
         InvokeRepeating("JumblePlaceholderText", 0, 1);
     }
 
-    public void LoadDetails(string name, string type, string description, bool bookmarkStatus)
+    public void LoadDetails(string name, string type, string description, bool bookmarkStatus, bool isItFromBookmarksMenu)
     {
-        if (_isItLoading == false)
+        if(isItFromBookmarksMenu)
         {
+            BookmarksPanel.SetActive(false);
+            _bookmarkStatus.gameObject.SetActive(false);
+            _closeDetailsButton.SetActive(true);
+        } else
+        {
+            _closeDetailsButton.SetActive(false);
+        }
+        if (IsItLoading == false)
+        {
+            BookmarksPanel.SetActive(false);
             PlaceholderText.color = new Color(
                 PlaceholderText.color.r,
                 PlaceholderText.color.g,
@@ -58,7 +74,7 @@ public class PanelController : MonoBehaviour
                 LoadText(_description, description, plainTextLoadSpeed);
             }
 
-            _isItLoading = true;
+            IsItLoading = true;
         }
     }
 
@@ -81,15 +97,29 @@ public class PanelController : MonoBehaviour
 
     private IEnumerator LoadTextCo(TextMeshProUGUI field, string text, float speed)
     {
+        string followingCharacter = "_";
         for (int i = 0; i < text.Length; i++)
         {
-            field.text += text[i];
+            if (i > 0)
+            {
+                field.text = field.text.Substring(0, field.text.Length - 1);
+                field.text += text[i] + followingCharacter;
+            }
+            else if (i == 0)
+            {
+                field.text += text[i] + followingCharacter;
+            }
+
+            if (i == text.Length - 1)
+            {
+                field.text = field.text.Substring(0, field.text.Length - 1);
+            }
             yield return new WaitForSeconds(speed);
         }
 
         if (field == _description)
         {
-            _isItLoading = false;
+            IsItLoading = false;
         }
     }
 

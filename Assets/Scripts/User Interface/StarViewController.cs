@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class StarViewController : MonoBehaviour
@@ -21,7 +22,45 @@ public class StarViewController : MonoBehaviour
     public StarController PreviousStarController;
     public StarController CurrentStarController;
 
+    [Header("======> Bookmarks-related system")]
+    [Space(10)]
+    [SerializeField]
+    private Transform _bookmarksContainer = null;
+    [SerializeField]
+    private GameObject _bookmarkEntryPrefab = null;
     private List<StarController> _bookmarkedObjects = new List<StarController>();
+
+    #region Dependencies
+    public PanelController PanelController = null;
+    #endregion
+
+    private void Start()
+    {
+        PanelController = FindObjectOfType<PanelController>();
+    }
+
+    public void DisplayBookmarks()
+    {
+        if (PanelController.IsItLoading == false)
+        {
+            PanelController.BookmarksPanel.SetActive(true);
+            PanelController.gameObject.SetActive(false);
+            for (int i = 0; i < _bookmarksContainer.transform.childCount; i++)
+            {
+                Destroy(_bookmarksContainer.transform.GetChild(i).gameObject);
+            }
+
+            foreach (StarController bookmark in _bookmarkedObjects)
+            {
+                string entryText = bookmark.Name + " - <color=#FF3EC1>" + bookmark.StarClassification + "</color>";
+
+                GameObject bookmarkEntry = Instantiate(_bookmarkEntryPrefab, _bookmarksContainer);
+                bookmarkEntry.GetComponentInChildren<TextMeshProUGUI>().text = entryText;
+
+                bookmarkEntry.GetComponent<BookmarkController>().StarController = bookmark;
+            }
+        }
+    }
 
     private void Update()
     {
@@ -43,6 +82,7 @@ public class StarViewController : MonoBehaviour
             _bookmarkedObjects.Add(CurrentStarController);
         }
 
+        SortBookmarks();
         CurrentStarController.UpdateBookmarkStatus();
     }
 
@@ -62,6 +102,25 @@ public class StarViewController : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void SortBookmarks()
+    {
+        List<StarController> newList = _bookmarkedObjects;
+        for (int i = 0; i < newList.Count; i++)
+        {
+            for (int j = 0; j < newList.Count - 1; j++)
+            {
+                if (newList[j].Name.CompareTo(newList[j + 1].Name) > 0)
+                {
+                    StarController temp = newList[j];
+                    newList[j] = newList[j + 1];
+                    newList[j + 1] = temp;
+                }
+            }
+        }
+
+        _bookmarkedObjects = newList;
     }
 
     private void EnableRotation()

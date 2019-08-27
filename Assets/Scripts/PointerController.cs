@@ -12,6 +12,7 @@ public class PointerController : MonoBehaviour
 
     #region Dependencies
     private PanelController _panelController;
+    private StarViewController _starViewController;
     [Space(10)]
     [SerializeField]
     private Image ConsoleDisplay = null;
@@ -20,74 +21,91 @@ public class PointerController : MonoBehaviour
     private void Start()
     {
         _panelController = FindObjectOfType<PanelController>();
+        _starViewController = FindObjectOfType<StarViewController>();
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(1) && LensGlassController.CanCameraZoom)
+        if (_panelController.IsItLoading == false)
         {
-            if (_zoomedIn)
+            if (Input.GetMouseButtonDown(1) && LensGlassController.CanCameraZoom)
             {
-                foreach (GameObject obj in MainViewObjects)
+                if (_zoomedIn)
                 {
-                    if (obj != null)
+                    _starViewController.DisplayBookmarks();
+                    foreach (GameObject obj in MainViewObjects)
                     {
-                        obj.SetActive(true);
+                        if (obj != null)
+                        {
+                            if (_starViewController.GetNumberOfBookmarks() > 0)
+                            {
+                                obj.SetActive(true);
+                            }
+                            else
+                            {
+                                if (obj.name != "Bookmarks Panel")
+                                {
+                                    obj.SetActive(true);
+                                }
+                            }
+                        }
+                    }
+                    foreach (GameObject obj in ZoomedViewObjects)
+                    {
+                        if (obj != null)
+                        {
+                            obj.SetActive(false);
+                        }
                     }
                 }
-                foreach (GameObject obj in ZoomedViewObjects)
+                else
                 {
-                    if (obj != null)
+                    _starViewController.DisplayBookmarks();
+                    foreach (GameObject obj in MainViewObjects)
                     {
-                        obj.SetActive(false);
+                        if (obj != null)
+                        {
+                            obj.SetActive(false);
+                        }
+                    }
+                    foreach (GameObject obj in ZoomedViewObjects)
+                    {
+                        if (obj != null)
+                        {
+                            obj.SetActive(true);
+                        }
                     }
                 }
-            } else
-            {
-                foreach (GameObject obj in MainViewObjects)
-                {
-                    if (obj != null)
-                    {
-                        obj.SetActive(false);
-                    }
-                }
-                foreach (GameObject obj in ZoomedViewObjects)
-                {
-                    if (obj != null)
-                    {
-                        obj.SetActive(true);
-                    }
-                }
+                _zoomedIn = !_zoomedIn;
             }
-            _zoomedIn = !_zoomedIn;
-        }
 
-        Vector3 mousePosition = Input.mousePosition;
-        if ((mousePosition.x > Mathf.Abs(ConsoleDisplay.rectTransform.anchoredPosition.x) &&
-            mousePosition.x < ConsoleDisplay.rectTransform.sizeDelta.x) &&
-            ((mousePosition.y > -Mathf.Abs(ConsoleDisplay.rectTransform.anchoredPosition.y) + 80 &&
-            mousePosition.y < ConsoleDisplay.rectTransform.sizeDelta.y)))
-        {
-            if (Input.GetMouseButtonDown(0) && _zoomedIn == true)
+            Vector3 mousePosition = Input.mousePosition;
+            if ((mousePosition.x > Mathf.Abs(ConsoleDisplay.rectTransform.anchoredPosition.x) &&
+                mousePosition.x < ConsoleDisplay.rectTransform.sizeDelta.x) &&
+                ((mousePosition.y > -Mathf.Abs(ConsoleDisplay.rectTransform.anchoredPosition.y) + 80 &&
+                mousePosition.y < ConsoleDisplay.rectTransform.sizeDelta.y)))
             {
-                Vector3 pointerPosition = Camera.main.ViewportToWorldPoint(Input.mousePosition);
-                Vector2 origin = new Vector2(pointerPosition.x, pointerPosition.y);
-                Vector2 direction = Vector2.down;
-                RaycastHit2D hit = Physics2D.Raycast(origin, direction, Mathf.Infinity);
-
-                if (hit && hit.transform.CompareTag("Space Object"))
+                if (Input.GetMouseButtonDown(0) && _zoomedIn == true)
                 {
-                    StarController starController;
-                    if ((starController = hit.collider.GetComponent<StarController>()) != null)
+                    Vector3 pointerPosition = Camera.main.ViewportToWorldPoint(Input.mousePosition);
+                    Vector2 origin = new Vector2(pointerPosition.x, pointerPosition.y);
+                    Vector2 direction = Vector2.down;
+                    RaycastHit2D hit = Physics2D.Raycast(origin, direction, Mathf.Infinity);
+
+                    if (hit && hit.transform.CompareTag("Space Object"))
                     {
-                        starController.ToggleMarker();
-                        _panelController.LoadDetails(
-                            starController.Name,
-                            starController.StarClassification.ToString(),
-                            starController.Description,
-                            starController.Bookmarked);
+                        StarController starController;
+                        if ((starController = hit.collider.GetComponent<StarController>()) != null)
+                        {
+                            starController.ToggleMarker();
+                            _panelController.LoadDetails(
+                                starController.Name,
+                                starController.StarClassification.ToString(),
+                                starController.Description,
+                                starController.Bookmarked, false);
+                        }
+                        //ObjectDetailsManager.Instance.InitializePanelOf(hit.collider.GetComponent<StarController>(), pointerPosition);
                     }
-                    //ObjectDetailsManager.Instance.InitializePanelOf(hit.collider.GetComponent<StarController>(), pointerPosition);
                 }
             }
         }
