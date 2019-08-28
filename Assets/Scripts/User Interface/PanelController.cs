@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +23,7 @@ public class PanelController : MonoBehaviour
 
     [Header("======> Background of panel")]
     [Space(10)]
-    public TextMeshProUGUI PlaceholderText = null;
+    public List<TextMeshProUGUI> PlaceholderTexts = new List<TextMeshProUGUI>();
 
     public bool IsItLoading = false;
     private const float titlesLoadSpeed = 0.03f;
@@ -59,10 +60,10 @@ public class PanelController : MonoBehaviour
         if (IsItLoading == false)
         {
             BookmarksPanel.SetActive(false);
-            PlaceholderText.color = new Color(
-                PlaceholderText.color.r,
-                PlaceholderText.color.g,
-                PlaceholderText.color.b,
+            PlaceholderTexts[1].color = new Color(
+                PlaceholderTexts[1].color.r,
+                PlaceholderTexts[1].color.g,
+                PlaceholderTexts[1].color.b,
                 0.07f);
             _bookmarkStatus.gameObject.SetActive(true);
             _name.text = string.Empty;
@@ -139,12 +140,15 @@ public class PanelController : MonoBehaviour
 
     private void JumblePlaceholderText()
     {
-        string newCombination = string.Empty;
-        for (int i = 0; i < PlaceholderText.text.Length; i++)
+        for (int i = 0; i < PlaceholderTexts.Count; i++)
         {
-            newCombination += Random.Range(0, 9);
-        }
+            string newCombination = string.Empty;
+            for (int j = 0; j < PlaceholderTexts[i].text.Length; j++)
+            {
+                newCombination += Random.Range(0, 9);
+            }
 
-        PlaceholderText.text = newCombination;
+            PlaceholderTexts[i].text = newCombination;
+        }
     }
 }
