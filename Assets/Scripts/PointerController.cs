@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,10 +17,18 @@ public class PointerController : MonoBehaviour
     [Space(10)]
     [SerializeField]
     private Image ConsoleDisplay = null;
+    [Header("Used for illegal actions by user")]
+    [SerializeField]
+    private Image _lensCircle = null;
+    private bool _isErrorIconBlinking = false;
     #endregion
+
+    // Sound effects component
+    private AudioController _audioController;
 
     private void Start()
     {
+        _audioController = GetComponent<AudioController>();
         _panelController = FindObjectOfType<PanelController>();
         _starViewController = FindObjectOfType<StarViewController>();
     }
@@ -32,6 +41,7 @@ public class PointerController : MonoBehaviour
             {
                 if (_zoomedIn)
                 {
+                    _audioController.PlaySound("Zoom Out");
                     _starViewController.DisplayBookmarks();
                     foreach (GameObject obj in MainViewObjects)
                     {
@@ -60,6 +70,7 @@ public class PointerController : MonoBehaviour
                 }
                 else
                 {
+                    _audioController.PlaySound("Zoom In");
                     _starViewController.DisplayBookmarks();
                     foreach (GameObject obj in MainViewObjects)
                     {
@@ -80,11 +91,17 @@ public class PointerController : MonoBehaviour
             }
 
             Vector3 mousePosition = Input.mousePosition;
-            if ((mousePosition.x > Mathf.Abs(ConsoleDisplay.rectTransform.anchoredPosition.x) &&
+            if ((mousePosition.x > -Mathf.Abs(ConsoleDisplay.rectTransform.anchoredPosition.x) &&
                 mousePosition.x < ConsoleDisplay.rectTransform.sizeDelta.x) &&
                 ((mousePosition.y > -Mathf.Abs(ConsoleDisplay.rectTransform.anchoredPosition.y) + 80 &&
                 mousePosition.y < ConsoleDisplay.rectTransform.sizeDelta.y)))
             {
+                if (Input.GetMouseButtonDown(0) && _zoomedIn == false && _isErrorIconBlinking == false)
+                {
+                    _audioController.PlaySound("Zooming Error");
+                    StartCoroutine(BlinkIcon());
+                    _isErrorIconBlinking = true;
+                }
                 if (Input.GetMouseButtonDown(0) && _zoomedIn == true)
                 {
                     Vector3 pointerPosition = Camera.main.ViewportToWorldPoint(Input.mousePosition);
@@ -97,6 +114,10 @@ public class PointerController : MonoBehaviour
                         StarController starController;
                         if ((starController = hit.collider.GetComponent<StarController>()) != null)
                         {
+                            // Sound effect
+                            AudioController audioController = starController.GetComponent<AudioController>();
+                            audioController.PlaySound(Random.Range(0, audioController.CountOfSounds()));
+
                             starController.ToggleMarker();
                             _panelController.LoadDetails(
                                 starController.Name,
@@ -109,5 +130,21 @@ public class PointerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator BlinkIcon()
+    {
+        Color defaultColor = _lensCircle.color;
+
+        float blinkingSpeed = 0.1f;
+        for (int i = 0; i < 2; i++)
+        {
+            _lensCircle.color = new Color(255, 0, 0, 0.3f);
+            yield return new WaitForSeconds(blinkingSpeed);
+            _lensCircle.color = defaultColor;
+            yield return new WaitForSeconds(blinkingSpeed);
+        }
+
+        _isErrorIconBlinking = false;
     }
 }

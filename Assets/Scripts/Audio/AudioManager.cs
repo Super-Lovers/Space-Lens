@@ -11,6 +11,7 @@ public class AudioManager : MonoBehaviour
 
     #region Audio volume controls
     private float _previousSoundEffectsVolume;
+    [SerializeField]
     private float _soundEffectsVolume;
     public float SoundEffectsVolume
     {
@@ -27,6 +28,7 @@ public class AudioManager : MonoBehaviour
     }
 
     private float _previousBackgroundMusicVolume;
+    [SerializeField]
     private float _backgroundMusicVolume;
     public float BackgroundMusicVolume
     {

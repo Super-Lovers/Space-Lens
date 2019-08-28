@@ -32,20 +32,28 @@ public class PanelController : MonoBehaviour
     public GameObject BookmarksPanel;
     #endregion
 
+    // Sound effects components
+    public AudioController AudioController;
+
     private void Start()
     {
+        AudioController = GetComponent<AudioController>();
         InvokeRepeating("JumblePlaceholderText", 0, 1);
     }
 
     public void LoadDetails(string name, string type, string description, bool bookmarkStatus, bool isItFromBookmarksMenu)
     {
-        if(isItFromBookmarksMenu)
+        AudioController.PlaySound("Text Displaying");
+        AudioController.AudioSource.loop = true;
+        if (isItFromBookmarksMenu)
         {
+            AudioController.PlaySound("Open/Close Menu");
             BookmarksPanel.SetActive(false);
             _bookmarkStatus.gameObject.SetActive(false);
             _closeDetailsButton.SetActive(true);
         } else
         {
+            AudioController.PlaySound("Open/Close Menu");
             _closeDetailsButton.SetActive(false);
         }
         if (IsItLoading == false)
@@ -80,6 +88,10 @@ public class PanelController : MonoBehaviour
 
     public void UpdateBookmarkStatus(bool bookmarkStatus)
     {
+        if (AudioController != null)
+        {
+            AudioController.PlaySound("Open/Close Menu");
+        }
         if (bookmarkStatus)
         {
             _bookmarkStatus.sprite = BookmarkedImage;
@@ -119,6 +131,8 @@ public class PanelController : MonoBehaviour
 
         if (field == _description)
         {
+            AudioController.AudioSource.loop = false;
+            AudioController.AudioSource.Stop();
             IsItLoading = false;
         }
     }

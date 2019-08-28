@@ -1,34 +1,46 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
+[RequireComponent(typeof(AudioSource))]
 public class AudioController : MonoBehaviour
 {
     [SerializeField]
     public AudioType AudioType;
+    [SerializeField]
     private List<SoundFile> _soundEffects = new List<SoundFile>();
 
     #region Components
     AudioManager _audioManager;
-    AudioSource _audioSource;
+    [System.NonSerialized]
+    public AudioSource AudioSource;
     #endregion
 
     private void Start()
     {
         _audioManager = AudioManager.Instance;
-        _audioSource = GetComponent<AudioSource>();
+        AudioSource = GetComponent<AudioSource>();
         List<AudioSource> soundSources = _audioManager.SoundSources;
         List<AudioSource> backgroundSources = _audioManager.BackgroundSources;
 
-        if (AudioType == AudioType.Sound && soundSources.Contains(_audioSource) == false)
+        if (AudioType == AudioType.Sound && soundSources.Contains(AudioSource) == false)
         {
-            soundSources.Add(_audioSource);
-            _audioSource.volume = _audioManager.SoundEffectsVolume;
+            soundSources.Add(AudioSource);
+            AudioSource.volume = _audioManager.SoundEffectsVolume;
         }
-        else if (AudioType == AudioType.Background && backgroundSources.Contains(_audioSource) == false)
+        else if (AudioType == AudioType.Background && backgroundSources.Contains(AudioSource) == false)
         {
-            backgroundSources.Add(_audioSource);
-            _audioSource.volume = _audioManager.BackgroundMusicVolume;
+            backgroundSources.Add(AudioSource);
+            AudioSource.volume = _audioManager.BackgroundMusicVolume;
         }
+    }
+
+    public int CountOfSounds()
+    {
+        return _soundEffects.Count;
+    }
+
+    public void PlaySound(int soundIndex)
+    {
+        AudioSource.PlayOneShot(_soundEffects[soundIndex].AudioClip);
     }
 
     public void PlaySound(string soundName)
@@ -39,7 +51,7 @@ public class AudioController : MonoBehaviour
             if (soundFile.Name == soundName)
             {
                 isSoundFileFound = true;
-                _audioSource.PlayOneShot(soundFile.AudioClip);
+                AudioSource.PlayOneShot(soundFile.AudioClip);
                 break;
             }
         }

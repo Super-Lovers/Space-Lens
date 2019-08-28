@@ -301,7 +301,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: 
-  _starClassification: 0
+  Description: 
+  StarClassification: 1
+  Bookmarked: 0
   _temperatureInKelvin: 0
   _marker: {fileID: 4839844012818107787}
 --- !u!114 &-7219134282710003867
@@ -317,3 +319,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AudioType: 0
+  _soundEffects:
+  - Name: Select Sound 1
+    AudioClip: {fileID: 8300000, guid: 54f3b772f5e66ca49bd157981fe49d20, type: 3}
+  - Name: Select Sound 2
+    AudioClip: {fileID: 8300000, guid: 6cf38d280b1e90544af67d53f329b966, type: 3}
