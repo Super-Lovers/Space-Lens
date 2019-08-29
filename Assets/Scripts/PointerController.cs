@@ -21,6 +21,8 @@ public class PointerController : MonoBehaviour
     [SerializeField]
     private Image _lensCircle = null;
     private bool _isErrorIconBlinking = false;
+    [SerializeField]
+    private Camera _zoomCamera;
     #endregion
 
     // Sound effects component
@@ -35,7 +37,7 @@ public class PointerController : MonoBehaviour
 
     void Update()
     {
-        if (_panelController.IsItLoading == false)
+        if (_panelController.IsItLoading == false && PlayerController.Instance.isGameStarted)
         {
             if (Input.GetMouseButtonDown(1) && LensGlassController.CanCameraZoom)
             {
@@ -104,15 +106,17 @@ public class PointerController : MonoBehaviour
                 }
                 if (Input.GetMouseButtonDown(0) && _zoomedIn == true)
                 {
-                    Vector3 pointerPosition = Camera.main.ViewportToWorldPoint(Input.mousePosition);
+                    Vector3 pointerPosition = _zoomCamera.ScreenToWorldPoint(Input.mousePosition);
                     Vector2 origin = new Vector2(pointerPosition.x, pointerPosition.y);
-                    Vector2 direction = Vector2.down;
-                    RaycastHit2D hit = Physics2D.Raycast(origin, direction, Mathf.Infinity);
+                    Vector2 direction = Vector2.one;
 
-                    if (hit && hit.transform.CompareTag("Space Object"))
+                    // Find a way to make it as accurate as possible.
+                    RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, Mathf.Infinity, 9);
+
+                    if (hits.Length > 0 && hits[hits.Length - 1].transform.CompareTag("Space Object"))
                     {
                         StarController starController;
-                        if ((starController = hit.collider.GetComponent<StarController>()) != null)
+                        if ((starController = hits[hits.Length - 1].collider.GetComponent<StarController>()) != null)
                         {
                             // Sound effect
                             AudioController audioController = starController.GetComponent<AudioController>();

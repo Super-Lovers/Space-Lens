@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
@@ -20,8 +21,8 @@ public class AudioManager : MonoBehaviour
         {
             // We validate whether or not the volume is greater
             // than or less than it should be, to avoid exceptions.
-            if (value > 100) { _soundEffectsVolume = 100; }
-            else if (value < 0) { _soundEffectsVolume = 0; }
+            if (value >= 100) { _soundEffectsVolume = 100; }
+            else if (value <= 0) { _soundEffectsVolume = 0; }
             else { _soundEffectsVolume = value; }
             UpdateVolume();
         }
@@ -35,8 +36,8 @@ public class AudioManager : MonoBehaviour
         get { return _backgroundMusicVolume; }
         set
         {
-            if (value > 100) { _backgroundMusicVolume = 100; }
-            else if (value < 0) { _backgroundMusicVolume = 0; }
+            if (value >= 100) { _backgroundMusicVolume = 100; }
+            else if (value <= 0) { _backgroundMusicVolume = 0; }
             else { _backgroundMusicVolume = value; }
             UpdateVolume();
         }
@@ -47,6 +48,15 @@ public class AudioManager : MonoBehaviour
     [NonSerialized]
     public AudioController AudioController;
     #endregion
+
+    [Header("Images to display when updating volume level in order.")]
+    [Space(10)]
+    [SerializeField]
+    private List<Sprite> _audioVolumeLevels = new List<Sprite>(4);
+    [SerializeField]
+    private Image _backgroundVolumeIcon = null;
+    [SerializeField]
+    private Image _soundVolumeIcon = null;
 
     private void Awake()
     {
@@ -83,8 +93,10 @@ public class AudioManager : MonoBehaviour
                 audioSource.volume = BackgroundMusicVolume / 100f;
             }
         }
-
+        
+        UpdateIcons();
         // TODO: Play sound effect to indicate the change was made.
+        AudioController.PlaySound("Volume Update");
     }
 
     #region Sound effects events
@@ -144,4 +156,48 @@ public class AudioManager : MonoBehaviour
         }
     }
     #endregion
+
+    public void UpdateIcons()
+    {
+        if (BackgroundMusicVolume <= 9)
+        {
+            _backgroundVolumeIcon.sprite = _audioVolumeLevels[0];
+        }
+        else if (BackgroundMusicVolume > 9 && BackgroundMusicVolume < 25)
+        {
+            _backgroundVolumeIcon.sprite = _audioVolumeLevels[1];
+        } else if (BackgroundMusicVolume >= 25 && BackgroundMusicVolume < 50)
+        {
+            _backgroundVolumeIcon.sprite = _audioVolumeLevels[2];
+        }
+        else if (BackgroundMusicVolume >= 50 && BackgroundMusicVolume < 75)
+        {
+            _backgroundVolumeIcon.sprite = _audioVolumeLevels[3];
+        }
+        else if (BackgroundMusicVolume >= 75 && BackgroundMusicVolume <= 100)
+        {
+            _backgroundVolumeIcon.sprite = _audioVolumeLevels[4];
+        }
+
+        if (SoundEffectsVolume <= 9)
+        {
+            _soundVolumeIcon.sprite = _audioVolumeLevels[0];
+        } 
+        else if (SoundEffectsVolume > 9 && SoundEffectsVolume < 25)
+        {
+            _soundVolumeIcon.sprite = _audioVolumeLevels[1];
+        }
+        else if (SoundEffectsVolume >= 25 && SoundEffectsVolume < 50)
+        {
+            _soundVolumeIcon.sprite = _audioVolumeLevels[2];
+        }
+        else if (SoundEffectsVolume >= 50 && SoundEffectsVolume < 75)
+        {
+            _soundVolumeIcon.sprite = _audioVolumeLevels[3];
+        }
+        else if (SoundEffectsVolume >= 75 && SoundEffectsVolume <= 100)
+        {
+            _soundVolumeIcon.sprite = _audioVolumeLevels[4];
+        }
+    }
 }
