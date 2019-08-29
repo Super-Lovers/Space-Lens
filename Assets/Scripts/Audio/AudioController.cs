@@ -16,20 +16,24 @@ public class AudioController : MonoBehaviour
 
     private void Start()
     {
-        _audioManager = AudioManager.Instance;
-        AudioSource = GetComponent<AudioSource>();
-        List<AudioSource> soundSources = _audioManager.SoundSources;
-        List<AudioSource> backgroundSources = _audioManager.BackgroundSources;
 
-        if (AudioType == AudioType.Sound && soundSources.Contains(AudioSource) == false)
+        AudioSource = GetComponent<AudioSource>();
+        _audioManager = AudioManager.Instance;
+        if (_audioManager != null)
         {
-            soundSources.Add(AudioSource);
-            AudioSource.volume = _audioManager.SoundEffectsVolume;
-        }
-        else if (AudioType == AudioType.Background && backgroundSources.Contains(AudioSource) == false)
-        {
-            backgroundSources.Add(AudioSource);
-            AudioSource.volume = _audioManager.BackgroundMusicVolume;
+            List<AudioSource> soundSources = _audioManager.SoundSources;
+            List<AudioSource> backgroundSources = _audioManager.BackgroundSources;
+
+            if (AudioType == AudioType.Sound && soundSources.Contains(AudioSource) == false)
+            {
+                soundSources.Add(AudioSource);
+                AudioSource.volume = _audioManager.SoundEffectsVolume;
+            }
+            else if (AudioType == AudioType.Background && backgroundSources.Contains(AudioSource) == false)
+            {
+                backgroundSources.Add(AudioSource);
+                AudioSource.volume = _audioManager.BackgroundMusicVolume;
+            }
         }
     }
 

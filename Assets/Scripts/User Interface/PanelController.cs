@@ -31,6 +31,8 @@ public class PanelController : MonoBehaviour
 
     #region Dependencies
     public GameObject BookmarksPanel;
+    public List<HUDIndicatorController> HUDIndicators;
+    private StarViewController _starViewController;
     #endregion
 
     // Sound effects components
@@ -38,6 +40,7 @@ public class PanelController : MonoBehaviour
 
     private void Start()
     {
+        _starViewController = GetComponent<StarViewController>();
         AudioController = GetComponent<AudioController>();
         InvokeRepeating("JumblePlaceholderText", 0, 1);
     }
@@ -100,6 +103,30 @@ public class PanelController : MonoBehaviour
         else
         {
             _bookmarkStatus.sprite = NotBookmarkedImage;
+        }
+
+        UpdateIndicatorsStatus();
+    }
+    
+    public void UpdateLightIndicators()
+    {
+        foreach (HUDIndicatorController indicator in HUDIndicators)
+        {
+            if (indicator != null)
+            {
+                indicator.UpdateHUDLights();
+            }
+        }
+    }
+
+    public void UpdateIndicatorsStatus()
+    {
+        foreach (HUDIndicatorController indicator in HUDIndicators)
+        {
+            if (indicator != null)
+            {
+                indicator.UpdateStatus();
+            }
         }
     }
 

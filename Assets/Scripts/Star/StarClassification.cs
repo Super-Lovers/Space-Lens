@@ -6,5 +6,6 @@
     F,
     A,
     B,
-    O
+    O,
+    Vessel
 }

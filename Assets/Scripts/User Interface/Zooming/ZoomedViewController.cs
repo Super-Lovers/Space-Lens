@@ -6,6 +6,14 @@ public class ZoomedViewController : MonoBehaviour
     [SerializeField]
     private float _movementSpeed = 0.01f;
 
+    #region Dependencies
+    private PanelController _panelController;
+    #endregion
+
+    private void Start()
+    {
+        _panelController = FindObjectOfType<PanelController>();
+    }
 
     private void Update()
     {
@@ -38,5 +46,7 @@ public class ZoomedViewController : MonoBehaviour
             currentPosition.y + valuesToUpdateToPosition.y,
             currentPosition.z
             );
+
+        _panelController.UpdateLightIndicators();
     }
 }

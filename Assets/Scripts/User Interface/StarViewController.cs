@@ -32,6 +32,7 @@ public class StarViewController : MonoBehaviour
 
     #region Dependencies
     public PanelController PanelController = null;
+    public List<HUDIndicatorController> HUDIndicators;
     #endregion
 
     private void Start()
@@ -64,11 +65,14 @@ public class StarViewController : MonoBehaviour
 
     private void Update()
     {
-        if (_rotationCooldown == false)
+        if (_starView != null)
         {
-            _starView.Rotate(new Vector3(0, 0, 0.2f));
-            Invoke("EnableRotation", _rotationDelay);
-            _rotationCooldown = true;
+            if (_rotationCooldown == false)
+            {
+                _starView.Rotate(new Vector3(0, 0, 0.2f));
+                Invoke("EnableRotation", _rotationDelay);
+                _rotationCooldown = true;
+            }
         }
     }
 
@@ -77,9 +81,27 @@ public class StarViewController : MonoBehaviour
         if (isObjectBookmarked(CurrentStarController))
         {
             _bookmarkedObjects.Remove(CurrentStarController);
+
+            foreach (HUDIndicatorController indicator in HUDIndicators)
+            {
+                if (CurrentStarController == indicator.Target)
+                {
+                    indicator.IsTargetFound = false;
+                    indicator.UpdateStatus();
+                }
+            }
         } else
         {
             _bookmarkedObjects.Add(CurrentStarController);
+
+            foreach (HUDIndicatorController indicator in HUDIndicators)
+            {
+                if (CurrentStarController == indicator.Target)
+                {
+                    indicator.IsTargetFound = true;
+                    indicator.UpdateStatus();
+                }
+            }
         }
 
         SortBookmarks();

@@ -48,7 +48,10 @@ public class StarController : MonoBehaviour
     public void UpdateBookmarkStatus()
     {
         Bookmarked = _starViewController.isObjectBookmarked(this);
-        _panelController.UpdateBookmarkStatus(Bookmarked);
+        if (_panelController != null)
+        {
+            _panelController.UpdateBookmarkStatus(Bookmarked);
+        }
     }
 
     private void Update()
