@@ -22,7 +22,10 @@ public class FadingController : MonoBehaviour
             _animator.SetBool("FadeIn", false);
         }
 
-        StartCoroutine(ChangeScene(newScene));
+        if (newScene != string.Empty)
+        {
+            StartCoroutine(ChangeScene(newScene));
+        }
     }
 
     private IEnumerator ChangeScene(string newScene)

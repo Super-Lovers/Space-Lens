@@ -37,10 +37,11 @@ public class PointerController : MonoBehaviour
 
     void Update()
     {
-        if (_panelController.IsItLoading == false && PlayerController.Instance.isGameStarted)
+        if (PlayerController.Instance.isGameStarted)
         {
             if (Input.GetMouseButtonDown(1) && LensGlassController.CanCameraZoom)
             {
+                _panelController.ClearTextFields();
                 if (_zoomedIn)
                 {
                     _panelController.UpdateLightIndicators();
@@ -108,6 +109,7 @@ public class PointerController : MonoBehaviour
                 }
                 if (Input.GetMouseButtonDown(0) && _zoomedIn == true)
                 {
+                    _panelController.ClearTextFields();
                     Vector3 pointerPosition = _zoomCamera.ScreenToWorldPoint(Input.mousePosition);
                     Vector2 origin = new Vector2(pointerPosition.x, pointerPosition.y);
                     Vector2 direction = Vector2.one;
@@ -124,11 +126,7 @@ public class PointerController : MonoBehaviour
                             audioController.PlaySound(Random.Range(0, audioController.CountOfSounds()));
 
                             starController.ToggleMarker();
-                            _panelController.LoadDetails(
-                                starController.Name,
-                                starController.StarClassification.ToString(),
-                                starController.Description,
-                                starController.Bookmarked, false);
+                            _panelController.LoadDetails(starController, false);
                         }
                         //ObjectDetailsManager.Instance.InitializePanelOf(hit.collider.GetComponent<StarController>(), pointerPosition);
                     }

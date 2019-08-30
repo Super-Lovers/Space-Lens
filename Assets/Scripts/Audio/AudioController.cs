@@ -16,7 +16,6 @@ public class AudioController : MonoBehaviour
 
     private void Start()
     {
-
         AudioSource = GetComponent<AudioSource>();
         _audioManager = AudioManager.Instance;
         if (_audioManager != null)
@@ -27,12 +26,12 @@ public class AudioController : MonoBehaviour
             if (AudioType == AudioType.Sound && soundSources.Contains(AudioSource) == false)
             {
                 soundSources.Add(AudioSource);
-                AudioSource.volume = _audioManager.SoundEffectsVolume;
+                AudioSource.volume = _audioManager.SoundEffectsVolume / 100f;
             }
             else if (AudioType == AudioType.Background && backgroundSources.Contains(AudioSource) == false)
             {
                 backgroundSources.Add(AudioSource);
-                AudioSource.volume = _audioManager.BackgroundMusicVolume;
+                AudioSource.volume = _audioManager.BackgroundMusicVolume / 100f;
             }
         }
     }

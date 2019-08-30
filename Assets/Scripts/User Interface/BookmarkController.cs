@@ -13,6 +13,6 @@ public class BookmarkController : MonoBehaviour
     public void LoadDetails()
     {
         _starViewController.PanelController.gameObject.SetActive(true);
-        _starViewController.PanelController.LoadDetails(StarController.Name, StarController.StarClassification.ToString(), StarController.Description, StarController.Bookmarked, true);
+        _starViewController.PanelController.LoadDetails(StarController, true);
     }
 }

@@ -71,7 +71,7 @@ public class AudioManager : MonoBehaviour
             Instance = this;
         }
     }
-
+    
     /// <summary>
     /// This function runs whenever the audio settings' volume parameter of
     /// the audio sources in the scenes is updated by the player.

@@ -42,24 +42,21 @@ public class StarViewController : MonoBehaviour
 
     public void DisplayBookmarks()
     {
-        if (PanelController.IsItLoading == false)
+        PanelController.BookmarksPanel.SetActive(true);
+        PanelController.gameObject.SetActive(false);
+        for (int i = 0; i < _bookmarksContainer.transform.childCount; i++)
         {
-            PanelController.BookmarksPanel.SetActive(true);
-            PanelController.gameObject.SetActive(false);
-            for (int i = 0; i < _bookmarksContainer.transform.childCount; i++)
-            {
-                Destroy(_bookmarksContainer.transform.GetChild(i).gameObject);
-            }
+            Destroy(_bookmarksContainer.transform.GetChild(i).gameObject);
+        }
 
-            foreach (StarController bookmark in _bookmarkedObjects)
-            {
-                string entryText = bookmark.Name + " - <color=#FF3EC1>" + bookmark.StarClassification + "</color>";
+        foreach (StarController bookmark in _bookmarkedObjects)
+        {
+            string entryText = bookmark.Name + " - <color=#FF3EC1>" + bookmark.StarClassification + "</color>";
 
-                GameObject bookmarkEntry = Instantiate(_bookmarkEntryPrefab, _bookmarksContainer);
-                bookmarkEntry.GetComponentInChildren<TextMeshProUGUI>().text = entryText;
+            GameObject bookmarkEntry = Instantiate(_bookmarkEntryPrefab, _bookmarksContainer);
+            bookmarkEntry.GetComponentInChildren<TextMeshProUGUI>().text = entryText;
 
-                bookmarkEntry.GetComponent<BookmarkController>().StarController = bookmark;
-            }
+            bookmarkEntry.GetComponent<BookmarkController>().StarController = bookmark;
         }
     }
 

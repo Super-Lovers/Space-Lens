@@ -38,15 +38,18 @@ public class PanelController : MonoBehaviour
     // Sound effects components
     public AudioController AudioController;
 
+    private Coroutine _currentCoroutine = null;
+
     private void Start()
     {
-        _starViewController = GetComponent<StarViewController>();
+        _starViewController = FindObjectOfType<StarViewController>();
         AudioController = GetComponent<AudioController>();
         InvokeRepeating("JumblePlaceholderText", 0, 1);
     }
 
-    public void LoadDetails(string name, string type, string description, bool bookmarkStatus, bool isItFromBookmarksMenu)
+    public void LoadDetails(StarController spaceObj, bool isItFromBookmarksMenu)
     {
+        _starViewController.CurrentStarController = spaceObj;
         AudioController.PlaySound("Text Displaying");
         AudioController.AudioSource.loop = true;
         if (isItFromBookmarksMenu)
@@ -73,17 +76,17 @@ public class PanelController : MonoBehaviour
             _type.text = string.Empty;
             _description.text = string.Empty;
 
-            UpdateBookmarkStatus(bookmarkStatus);
+            UpdateBookmarkStatus(spaceObj.Bookmarked);
 
-            LoadText(_name, name, titlesLoadSpeed);
-            LoadText(_type, "Type: " + type, titlesLoadSpeed);
-            if (description == string.Empty)
+            LoadText(_name, spaceObj.Name, titlesLoadSpeed);
+            LoadText(_type, "Type: " + spaceObj.StarClassification.ToString(), titlesLoadSpeed);
+            if (spaceObj.Description == string.Empty)
             {   
                 LoadText(_description, "Nothing of significance to report", plainTextLoadSpeed);
             }
             else
             {
-                LoadText(_description, description, plainTextLoadSpeed);
+                LoadText(_description, spaceObj.Description, plainTextLoadSpeed);
             }
 
             IsItLoading = true;
@@ -130,9 +133,23 @@ public class PanelController : MonoBehaviour
         }
     }
 
+    public void ClearTextFields()
+    {
+        if (_currentCoroutine != null)
+        {
+            StopAllCoroutines();
+            _name.text = string.Empty;
+            _type.text = string.Empty;
+            _description.text = string.Empty;
+            IsItLoading = false;
+            AudioController.AudioSource.loop = false;
+            AudioController.AudioSource.Stop();
+        }
+    }
+
     private void LoadText(TextMeshProUGUI field, string text, float speed)
     {
-        StartCoroutine(LoadTextCo(field, text, speed));
+        _currentCoroutine = StartCoroutine(LoadTextCo(field, text, speed));
     }
 
     private IEnumerator LoadTextCo(TextMeshProUGUI field, string text, float speed)
