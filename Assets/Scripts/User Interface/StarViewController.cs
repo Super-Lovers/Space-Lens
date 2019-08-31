@@ -42,6 +42,7 @@ public class StarViewController : MonoBehaviour
 
     public void DisplayBookmarks()
     {
+        PanelController.ClearTextFields();
         PanelController.BookmarksPanel.SetActive(true);
         PanelController.gameObject.SetActive(false);
         for (int i = 0; i < _bookmarksContainer.transform.childCount; i++)
@@ -51,7 +52,7 @@ public class StarViewController : MonoBehaviour
 
         foreach (StarController bookmark in _bookmarkedObjects)
         {
-            string entryText = bookmark.Name + " - <color=#FF3EC1>" + bookmark.StarClassification + "</color>";
+            string entryText = bookmark.Name;
 
             GameObject bookmarkEntry = Instantiate(_bookmarkEntryPrefab, _bookmarksContainer);
             bookmarkEntry.GetComponentInChildren<TextMeshProUGUI>().text = entryText;

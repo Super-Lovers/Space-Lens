@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     public bool isGameCompleted = false;
 
     [Space(10)]
-    public GameObject IntroContainer = null;
+    private GameObject _introContainer = null;
     public GameObject ScreenInitialization = null;
 
     private FadingController _fadingController;
@@ -21,16 +21,18 @@ public class PlayerController : MonoBehaviour
         else
         {
             Instance = this;
+            DontDestroyOnLoad(this);
         }
     }
 
     private void Start()
     {
+        _introContainer = GameObject.Find("Intro");
         _fadingController = FindObjectOfType<FadingController>();
 
         if (isGameCompleted)
         {
-            IntroContainer.SetActive(false);
+            _introContainer.SetActive(false);
             ScreenInitialization.SetActive(true);
             _fadingController.Fade("out", string.Empty);
         }

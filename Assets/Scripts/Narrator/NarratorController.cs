@@ -40,6 +40,11 @@ public class NarratorController : MonoBehaviour
         {
             NextDialogue();
         }
+
+        if (SceneManager.GetActiveScene().name == "Ending")
+        {
+            PlayerController.Instance.isGameCompleted = true;
+        }
     }
 
     private void Update()
@@ -133,7 +138,7 @@ public class NarratorController : MonoBehaviour
 
     private IEnumerator LoadTextCo(TextMeshProUGUI field, string text, float speed)
     {
-        AudioManager.Instance.AudioController.PlaySound("Text Displaying");
+        AudioManager.Instance.AudioController.LoopSound("Text Displaying");
         AudioManager.Instance.AudioController.AudioSource.loop = true;
         string followingCharacter = "_";
         for (int i = 0; i < text.Length; i++)

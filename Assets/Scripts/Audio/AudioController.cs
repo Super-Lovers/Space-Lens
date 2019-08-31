@@ -64,4 +64,24 @@ public class AudioController : MonoBehaviour
             Debug.Log($"The sound file <color=#ff0000>{soundName}</color> is not valid!");
         }
     }
+
+    public void LoopSound(string soundName)
+    {
+        bool isSoundFileFound = false;
+        foreach (SoundFile soundFile in _soundEffects)
+        {
+            if (soundFile.Name == soundName)
+            {
+                isSoundFileFound = true;
+                AudioSource.clip = soundFile.AudioClip;
+                AudioSource.Play();
+                break;
+            }
+        }
+
+        if (isSoundFileFound == false)
+        {
+            Debug.Log($"The sound file <color=#ff0000>{soundName}</color> is not valid!");
+        }
+    }
 }
