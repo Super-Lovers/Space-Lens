@@ -31,10 +31,11 @@ public class NarratorController : MonoBehaviour
 
     private void Start()
     {
+        _fadingController = FindObjectOfType<FadingController>();
         _audioController = GetComponent<AudioController>();
         if (_isDialoguePlaying)
         {
-            StartCoroutine(PlayDialogue(_currentDialogueIndex, 2));
+            StartCoroutine(PlayDialogue(_currentDialogueIndex, _dialogue.Count - 1));
         } else
         {
             NextDialogue();
@@ -59,8 +60,9 @@ public class NarratorController : MonoBehaviour
     private IEnumerator PlayDialogue(int fromIndex, int toIncludingIndex)
     {
         _currentDialogueIndex = fromIndex;
-        for (int i = fromIndex; i <= toIncludingIndex; i++)
+        for (int i = fromIndex; i < toIncludingIndex; i++)
         {
+            yield return new WaitForSeconds(2);
             _currentDialogueIndex = i;
             NextDialogue();
             yield return new WaitForSeconds(_dialogue[_currentDialogueIndex].Delay);
@@ -76,7 +78,9 @@ public class NarratorController : MonoBehaviour
             }
         } else if (currentScene == "Ending")
         {
+            _fadingController.ResetAnimator();
             _fadingController.Fade("in", "MainScene");
+            PlayerController.Instance.isGameCompleted = true;
         }
     }
 
@@ -84,6 +88,27 @@ public class NarratorController : MonoBehaviour
     {
         _currentDialogueIndex++;
         LoadText(_textField, _dialogue[_currentDialogueIndex].Sentence, plainTextLoadSpeed, _dialogue[_currentDialogueIndex].ClearScreen);
+
+        Invoke("ToggleObjects", _dialogue[_currentDialogueIndex].Delay);
+    }
+
+    private void ToggleObjects()
+    {
+        foreach (GameObject obj in _dialogue[_currentDialogueIndex].ObjectToActivate)
+        {
+            if (obj != null)
+            {
+                obj.SetActive(true);
+            }
+        }
+
+        foreach (GameObject obj in _dialogue[_currentDialogueIndex].ObjectToDeactivate)
+        {
+            if (obj != null)
+            {
+                obj.SetActive(false);
+            }
+        }
     }
 
     private void PreviousDialogue()
@@ -108,6 +133,8 @@ public class NarratorController : MonoBehaviour
 
     private IEnumerator LoadTextCo(TextMeshProUGUI field, string text, float speed)
     {
+        AudioManager.Instance.AudioController.PlaySound("Text Displaying");
+        AudioManager.Instance.AudioController.AudioSource.loop = true;
         string followingCharacter = "_";
         for (int i = 0; i < text.Length; i++)
         {
@@ -123,16 +150,11 @@ public class NarratorController : MonoBehaviour
 
             if (i == text.Length - 1)
             {
+AudioManager.Instance.AudioController.AudioSource.loop = false;
+                AudioManager.Instance.AudioController.AudioSource.Stop();
                 field.text = field.text.Substring(0, field.text.Length - 1);
             }
-            yield return new WaitForSecondsRealtime(speed);
-        }
-
-        if (field.text.Length == text.Length)
-        {
-            _audioController.AudioSource.loop = false;
-            _audioController.AudioSource.Stop();
-            _isItLoading = false;
+            yield return new WaitForSeconds(speed);
         }
     }
 }

@@ -9,23 +9,39 @@ public class FadingController : MonoBehaviour
     private void Start()
     {
         _animator = GetComponent<Animator>();
+
+        if (SceneManager.GetActiveScene().name == "Ending")
+        {
+            Fade("out", string.Empty);
+        }
     }
 
     public void Fade(string direction, string newScene)
     {
-        _animator.SetBool("CanFade", true);
-        if (direction == "In" || direction == "in")
+        if (_animator != null)
         {
-            _animator.SetBool("FadeIn", true);
-        } else if (direction == "out" || direction == "out")
-        {
-            _animator.SetBool("FadeIn", false);
-        }
+            _animator.SetBool("CanFade", true);
+            if (direction == "In" || direction == "in")
+            {
+                _animator.SetBool("FadeIn", true);
+            }
+            else if (direction == "out" || direction == "Out")
+            {
+                _animator.SetBool("FadeIn", false);
+            }
 
-        if (newScene != string.Empty)
-        {
-            StartCoroutine(ChangeScene(newScene));
+            if (newScene != string.Empty)
+            {
+                StartCoroutine(ChangeScene(newScene));
+            }
+
+            Invoke("ResetAnimator", 1f);
         }
+    }
+
+    public void ResetAnimator()
+    {
+        _animator.SetBool("CanFade", false);
     }
 
     private IEnumerator ChangeScene(string newScene)

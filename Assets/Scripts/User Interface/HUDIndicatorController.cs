@@ -10,7 +10,7 @@ public class HUDIndicatorController : MonoBehaviour
     [Space(10)]
     public StarController Target = null;
     [SerializeField]
-    private Transform _zoomCameraTransform;
+    private Transform _zoomCameraTransform = null;
     [SerializeField]
     private List<Sprite> _indicatorVariations = new List<Sprite>();
     [Space(10)]
@@ -20,11 +20,11 @@ public class HUDIndicatorController : MonoBehaviour
     private List<Sprite> _lightVariations = new List<Sprite>();
 
     #region Dependencies
-    private PanelController _panelController;
-    private StarViewController _starViewController;
+    private PanelController _panelController = null;
+    private StarViewController _starViewController = null;
     #endregion
 
-    private AudioController _audioController;
+    private AudioController _audioController = null;
     private bool _isSoundPlayed = false;
 
     private void Start()

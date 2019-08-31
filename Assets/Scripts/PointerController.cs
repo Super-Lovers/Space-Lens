@@ -44,6 +44,11 @@ public class PointerController : MonoBehaviour
                 _panelController.ClearTextFields();
                 if (_zoomedIn)
                 {
+                    if (_starViewController.CurrentStarController != null)
+                    {
+                        _starViewController.CurrentStarController.HideMarker();
+                    }
+
                     _panelController.UpdateLightIndicators();
                     _audioController.PlaySound("Zoom Out");
                     _starViewController.DisplayBookmarks();

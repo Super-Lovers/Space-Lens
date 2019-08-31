@@ -30,9 +30,10 @@ public class PanelController : MonoBehaviour
     private const float plainTextLoadSpeed = 0.000000005f;
 
     #region Dependencies
-    public GameObject BookmarksPanel;
-    public List<HUDIndicatorController> HUDIndicators;
-    private StarViewController _starViewController;
+    public GameObject BookmarksPanel = null;
+    public List<HUDIndicatorController> HUDIndicators = new List<HUDIndicatorController>();
+    private StarViewController _starViewController = null;
+    private FadingController _fadingController = null;
     #endregion
 
     // Sound effects components
@@ -43,6 +44,7 @@ public class PanelController : MonoBehaviour
     private void Start()
     {
         _starViewController = FindObjectOfType<StarViewController>();
+        _fadingController = FindObjectOfType<FadingController>();
         AudioController = GetComponent<AudioController>();
         InvokeRepeating("JumblePlaceholderText", 0, 1);
     }
@@ -124,12 +126,24 @@ public class PanelController : MonoBehaviour
 
     public void UpdateIndicatorsStatus()
     {
+        int indicatorsActive = 0;
         foreach (HUDIndicatorController indicator in HUDIndicators)
         {
             if (indicator != null)
             {
                 indicator.UpdateStatus();
+                if (indicator.IsTargetFound)
+                {
+                    indicatorsActive++;
+                }
             }
+        }
+
+        // End game transition
+        if (indicatorsActive >= 5)
+        {
+            AudioManager.Instance.AudioController.PlaySound("End Game Sound");
+            _fadingController.Fade("in", "Ending");
         }
     }
 
