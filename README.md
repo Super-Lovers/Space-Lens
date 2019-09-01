@@ -12,7 +12,7 @@ The controls of the game are simple. You navigate the "Star view" (image in the 
 <p><img src="https://img.itch.zone/aW1hZ2UvNDc2OTg0LzI0NTA3NTgucG5n/original/tfcRtf.png"></p>
 
 ## Credits
-The game was created by Nikolay (Developer and Designer), Roger (Artist and Designer) and Youri (Designer) from the team Back & Body Hurts.
+The game was created by Nikolay Ivanov (Developer and Designer), Roger Recaldini (Artist and Designer) and Youri Mulder (Designer) from the team Back & Body Hurts.
 
 You can also find our game in its own github page: https://github.com/Super-Lovers/CGJ-2019-Game-Jam-Entry“
 
